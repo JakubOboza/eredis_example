@@ -1,0 +1,12 @@
+{application, eredis_example,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { eredis_example_app, []}},
+  {env, []}
+ ]}.
