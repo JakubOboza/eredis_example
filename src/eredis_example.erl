@@ -12,22 +12,9 @@
 
 -record(user, {id = nil, name, password_hash}).
 
+
 % public api
-
-start_link(_Args) ->
-  gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
-
-init([]) ->
-  {ok, Redis} = eredis:start_link(),
-  {ok, Redis}.
-
-stop(_Pid) ->
-  stop().
-
-stop() ->
-    gen_server:cast(?MODULE, stop).
-
-%% public client api
+%% interesting part
 
 get_user_by_id(Id) ->
   gen_server:call(?MODULE, {get_user_id, Id}).
@@ -41,6 +28,20 @@ save_user(User) ->
     _   -> gen_server:call(?MODULE, {update_user, User})
   end.
 
+% boring part, startup, shutdown etc...
+
+start_link(_Args) ->
+  gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+
+init([]) ->
+  {ok, Redis} = eredis:start_link(),
+  {ok, Redis}.
+
+stop(_Pid) ->
+  stop().
+
+stop() ->
+    gen_server:cast(?MODULE, stop).
 
 %% genserver handles
 
@@ -100,8 +101,8 @@ server_test_() ->
 
 generate_eredis_example_tests(_Pid) ->
   [
-    ?_assertEqual({ok,<<"OK">>}, eredis_example:save_user( #user{id = "666", name = "jakub", password_hash = "test" } ) ),
-    ?_assertEqual({ok, #user{ id = "666", name = "jakub", password_hash = "test"} }, eredis_example:get_user_by_id( "666" ) ),
+    ?_assertEqual({ok,<<"OK">>}, eredis_example:save_user( #user{id = "13", name = "jakub", password_hash = "test" } ) ),
+    ?_assertEqual({ok, #user{ id = "13", name = "jakub", password_hash = "test"} }, eredis_example:get_user_by_id( "13" ) ),
     ?_assertEqual({ok, <<"OK">>}, eredis_example:save_user( #user{name="kuba", password_hash = "test"} ) )
   ].
 
